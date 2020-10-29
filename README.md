@@ -55,47 +55,53 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 3. Basic use case:
 ```dart
 // 🗄️Plain Data Class
+import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
+
 class Model {
   int counter;
 
   Model(this.counter);
-}  
+}
 
 // 🤔Business Logic
 class ServiceState {
-  ServiceSatate(this.model);
-  final Model model;  
+  ServiceState(this.model);
+  final Model model;
 
-  void incrementMutable() { model.counter++ };
+  void incrementMutable() {
+    model.counter++;
+  }
 }
 
-// 🚀Global Functional Injection 
+// 🚀Global Functional Injection
 // `serviceState` is auto-cleaned when no longer used, testable and mockable.
 final serviceState = RM.inject(() => ServiceState(Model(0)));
 
-// 👀UI  
+// 👀UI
 class CounterApp extends StatelessWidget {
   final _model = serviceState.state.model;
   @override
   Widget build(BuildContext context) {
-    return Column (
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-            RaisedButton(
-                child: const Text('🏎️ Counter ++'),
-                onPressed: () => serviceState.setState(
-                    (s) => s.incrementMutable(),
-                ),
-            ),
-            RaisedButton(
-                child: const Text('⏱️ Undo'),
-                onPressed: () => serviceState.undoState(),
-            ),
-            serviceState.rebuilder(() => Text('🏁Result: ${_model.counter}')),
-        ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        RaisedButton(
+          child: const Text('🏎️ Counter ++'),
+          onPressed: () => serviceState.setState(
+            (s) => s.incrementMutable(),
+          ),
+        ),
+        RaisedButton(
+          child: const Text('⏱️ Undo'),
+          onPressed: () => serviceState.undoState(),
+        ),
+        serviceState.rebuilder(() => Text('🏁Result: ${_model.counter}')),
+      ],
     );
-  }  
+  }
 }
+
 ```
 
 
